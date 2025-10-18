@@ -6,14 +6,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
 // Import lifecycle hook interface
 import { OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 // Component decorator that defines metadata for the reservation form component
 @Component({
   // Selector used to embed this component in other templates
   selector: 'app-reservation-form',
   // Required form modules for template-driven and reactive forms
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule],
   // Path to the HTML template file
   templateUrl: './reservation-form.html',
   // Path to the CSS styles file
