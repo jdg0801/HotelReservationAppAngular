@@ -7,6 +7,11 @@ import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
 // Import lifecycle hook interface
 import { OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReservationService } from '../reservation/reservation';
+import { Reservation } from '../models/reservation';
+import { ActivatedRoute, Router } from '@angular/router';
+
+
 
 // Component decorator that defines metadata for the reservation form component
 @Component({
@@ -27,7 +32,11 @@ export class ReservationForm implements OnInit {
   reservationForm: FormGroup = new FormGroup({});
   
   // Constructor that injects the FormBuilder service
-  constructor(private formBuilder: FormBuilder){}
+  constructor(private formBuilder: FormBuilder,
+    private reservationService: ReservationService,
+    private router: Router,
+    private activated: ActivatedRoute
+  ){}
 
   // Lifecycle hook that initializes the form when component loads
   ngOnInit(): void {
@@ -40,13 +49,35 @@ export class ReservationForm implements OnInit {
       guestEmail: ['', [Validators.required, Validators.email]], // Email has multiple validators
       roomNumber: ['', Validators.required]
     })
+
+    let id = this.activated.snapshot.paramMap.get('id');
+
+    if (id) {
+    let numericId = parseInt(id);
+
+     let res = this.reservationService.getSingleReservation(numericId);
+     if (res) this.reservationForm.patchValue(res)
+  
+    }
   }
   
   // Method to handle form submission
   onSubmit() {
     // TODO: Implement form submission logic
-    if (this.reservationForm) {
+    if (this.reservationForm.valid) {
       // Form submission logic will go here
+      let entry : Reservation= this.reservationForm.value;
+
+      let id = this.activated.snapshot.paramMap.get('id');
+
+      if (id){
+        let numericId = parseInt(id);
+           this.reservationService.updateReservation(numericId, entry);
+      }else{
+            this.reservationService.addReservation(entry);
+      }
+      
+      this.router.navigate(['ReservationList']);
     }
   }
 }
